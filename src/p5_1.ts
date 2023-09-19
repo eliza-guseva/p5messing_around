@@ -26,7 +26,7 @@ var sketch = (p: p5) => {
     if (p.mouseIsPressed) {
       p.fill(0);
     } else {
-      p.fill(255);
+      p.fill(p.random(255));
     }
     p.rect(p.mouseX, p.mouseY, 50, 50);
 
