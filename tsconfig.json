@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "none",
     "noImplicitAny": true,
-    "outFile": "./js/build.js",
+    // "outFile": "./js/build.js",
+    "outDir": "./js/",
     "preserveConstEnums": true,
     "removeComments": true,
     "rootDir": "./src/",
