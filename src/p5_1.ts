@@ -1,19 +1,4 @@
 
-const body = document.querySelector('body')
-
-class PolygonHelper {
-  public static draw(x: number, y: number, npoints: number, radius: number) {
-    let angle: number = TWO_PI / npoints;
-    beginShape();
-    for (let a = 0; a < TWO_PI; a += angle) {
-      let sx: number = x + cos(a) * radius;
-      let sy: number = y + sin(a) * radius;
-      vertex(sx, sy);
-    }
-    endShape(CLOSE);
-  }
-}
-
 
 var sketch = (p: p5) => {
   const x: number = p.windowWidth / 2;
