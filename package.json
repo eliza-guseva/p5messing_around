@@ -5,8 +5,9 @@
   "main": "p5_1.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "run-p start-compile start-run",
-    "start-compile": "tsc --watch",
+    "build": "webpack --mode production",
+    "start": "run-p compile build",
+    "compile": "tsc",
     "start-run": "browser-sync start --server -w"
   },
   "keywords": [],
@@ -19,6 +20,8 @@
     "@types/p5": "^1.7.0",
     "browser-sync": "^2.29.3",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   }
 }
