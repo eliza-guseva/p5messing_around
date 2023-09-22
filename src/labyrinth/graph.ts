@@ -133,7 +133,7 @@ export class SquareGrid extends Graph {
                     this.x_step / 3, 
                     this.y_step / 3
                 );
-                p.fill(255);
+                p.fill(100);
 
                 totalWeight += nextEdge.weight;
                 console.log(`Edge added: ${nextEdge.from} - ${nextEdge.node}, weight: ${nextEdge.weight}`);
