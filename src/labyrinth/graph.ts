@@ -66,6 +66,11 @@ export class SquareGrid extends Graph {
             width, height);
     }
 
+    printGraph(): void {
+        console.log(`The grid with center at ${this.center} has the following graph:`);
+        super.printGraph();
+    }
+
     generateSquareGrid(width: number, height: number) {
         for (let iw = 0; iw < width; iw++) {
             for (let ih = 0; ih < height; ih++) {
@@ -104,47 +109,95 @@ export class SquareGrid extends Graph {
         return vertices_coords;
     }
 
-    drawPrimsLabyrinth(p: p5) {
+    drawNode(p: p5, node: string, intensity: number = 100) {
+        const nodeCoords = this.vertCoordinates.get(node);
+        p.ellipse(nodeCoords[0], nodeCoords[1], this.x_step / 3, this.y_step / 3);
+        p.fill(intensity);
+    }
+
+    drawEdge(p: p5, 
+        node1: string, node2: string, edge: {node: string, weight: number}, 
+        direction: string) {
+        const node1Coords = this.vertCoordinates.get(node1);
+        const node2Coords = this.vertCoordinates.get(node2);
+        p.line(node1Coords[0], node1Coords[1], node2Coords[0], node2Coords[1]);
+        p.stroke(50);
+        // stroke weight is equal to ellipse diameter
+        if (direction == "x") {
+            p.strokeWeight(this.x_step / 3);
+        }
+        else {
+            p.strokeWeight(this.y_step / 3);
+        }
+        p.textSize(20);
+                p.textAlign(p.CENTER, p.CENTER);
+                p.text(edge.weight, 
+                    (node1Coords[0] + node2Coords[0]) / 2, 
+                    (node1Coords[1] + node2Coords[1]) / 2);
+    }
+
+    private setLabyrinthStart(p: p5) {
         let startNode = this.getVertexKey(this.center);
-        let startCoords = this.vertCoordinates.get(startNode);
-        p.ellipse(startCoords[0], startCoords[1], this.x_step / 3, this.y_step / 3);
-        p.fill(255);
-
-        const nodes = this.adjacencyList.keys();
-        const visited: Set<string> = new Set();
-        const edgeList: { node: string, weight: number, from: string }[] = [];
-
-        visited.add(startNode);
-        let totalWeight = 0;
-
-        this.adjacencyList.get(startNode).forEach(edge => {
-            edgeList.push({ ...edge, from: startNode });
+        this.drawNode(p, startNode, 255);
+        console.log(`Starting at ${startNode}`)
+        let activeNodes: Array<string> = [];
+        let visited: Array<string> = [];
+        visited.push(startNode);
+        // add all 4 neighbors, draw vertices and edges, determine direction
+        const neighbors = this.adjacencyList.get(startNode);
+        neighbors.forEach(neighbor => {
+            const neighborCoords = this.vertCoordinates.get(neighbor.node);
+            this.drawNode(p, neighbor.node);
+            // if direction is x, draw horisontal edge, otherwise vertical
+            const direction = neighborCoords[0] == this.center[0] ? "x" : "y";
+            this.drawEdge(p, startNode, neighbor.node, neighbor, direction);
+            activeNodes.push(neighbor.node);
+            visited.push(neighbor.node);
         });
+        return [activeNodes, visited];
+        
+    }
 
-        while (edgeList.length > 0) {
-            edgeList.sort((a, b) => a.weight - b.weight);
-            const nextEdge = edgeList.shift();
+    drawPrimsLabyrinth(p: p5) {
+        // setting labyrinth start
+        let [activeNodes, visited] = this.setLabyrinthStart(p);
+        
+        let totalWight = 0;
+        while (activeNodes.length > 0) {
+            let activeNode = activeNodes[Math.floor(Math.random() * activeNodes.length)];
+            let availableNeighbors = (
+                this.adjacencyList.get(activeNode)
+                .filter(neighbor => !visited.includes(neighbor.node)));
 
-            if (!visited.has(nextEdge.node)) {
-                visited.add(nextEdge.node);
-                p.ellipse(
-                    this.vertCoordinates.get(nextEdge.node)[0], 
-                    this.vertCoordinates.get(nextEdge.node)[1], 
-                    this.x_step / 3, 
-                    this.y_step / 3
-                );
-                p.fill(100);
-
-                totalWeight += nextEdge.weight;
-                console.log(`Edge added: ${nextEdge.from} - ${nextEdge.node}, weight: ${nextEdge.weight}`);
-                this.adjacencyList.get(nextEdge.node).forEach(edge => {
-                    if (!visited.has(edge.node)) {
-                        edgeList.push({ ...edge, from: nextEdge.node });
-                    }
+            // check if there are any available neighbors
+            if (availableNeighbors.length > 0) {
+                // get an edge with lowest weight
+                let nextEdge = availableNeighbors.reduce((prev, curr) => {
+                    return prev.weight < curr.weight ? prev : curr;
                 });
+                // draw edge
+                const activeNodeCoords = this.vertCoordinates.get(activeNode);
+                const nextNodeCoords = this.vertCoordinates.get(nextEdge.node);
+                const direction = activeNodeCoords[0] == nextNodeCoords[0] ? "x" : "y";
+                this.drawEdge(p, activeNode, nextEdge.node, nextEdge, direction);
+                // add the weight to the total weight
+                totalWight += nextEdge.weight;
+                console.log(`Adding edge ${activeNode} -> ${nextEdge.node} with weight ${nextEdge.weight}`);
+                // add the edge to the visited set
+                visited.push(nextEdge.node);
+                // draw the edge
+                this.drawNode(p, nextEdge.node);
+                // add the neighbor to the active nodes
+                activeNodes.push(nextEdge.node);
+            }
+            else {
+                // remove the node from the active nodes
+                activeNodes = activeNodes.filter(node => node != activeNode);
             }
         }
-
+        // draw the graph only once, do not redraw it
     }
+
 }
+
 
