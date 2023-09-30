@@ -34,7 +34,7 @@ export class Graph {
         const vertex1Key = this.getVertexKey(vertex1);
         const vertex2Key = this.getVertexKey(vertex2);
         this.adjacencyList.get(vertex1Key).push({node: vertex2Key, weight: weight});
-        this.adjacencyList.get(vertex1Key).push({node: vertex2Key, weight: weight});
+        this.adjacencyList.get(vertex2Key).push({node: vertex1Key, weight: weight});
     }
 
     printGraph(): void {
@@ -53,17 +53,21 @@ export class SquareGrid extends Graph {
     y_step: number;
     x_offset: number;
     y_offset: number;
+    pathXwidth: number;
+    pathYwidth: number;
 
-    constructor(width: number, height: number, p: p5) {
+    constructor(nXnodes: number, nYnodes: number, p: p5) {
         super();
-        this.center = [Math.ceil(width / 2), Math.ceil(height / 2)];
-        this.x_step = p.windowWidth / width;
-        this.y_step = p.windowHeight / height;
-        this.x_offset = this.x_step / 2;
-        this.y_offset = this.y_step / 2;
-        this.generateSquareGrid(width, height);
+        this.center = [Math.floor(nXnodes / 2), Math.floor(nYnodes / 2)];
+        this.x_step = p.windowWidth / (nXnodes - 1);
+        this.y_step = p.windowHeight / (nYnodes -1);
+        this.pathXwidth = this.x_step / 2.5;
+        this.pathYwidth = this.y_step / 2.5;
+        this.x_offset = 0
+        this.y_offset = 0
+        this.generateSquareGrid(nXnodes, nYnodes);
         this.vertCoordinates = this.generateSquareDistances(
-            width, height);
+            nXnodes, nYnodes);
     }
 
     printGraph(): void {
@@ -71,9 +75,9 @@ export class SquareGrid extends Graph {
         super.printGraph();
     }
 
-    generateSquareGrid(width: number, height: number) {
-        for (let iw = 0; iw < width; iw++) {
-            for (let ih = 0; ih < height; ih++) {
+    generateSquareGrid(nXnodes: number, nYnodes: number) {
+        for (let iw = 0; iw < nXnodes; iw++) {
+            for (let ih = 0; ih < nYnodes; ih++) {
                 const vertex: PlaneCoord = [iw, ih];
                 this.addVertex(vertex);
 
@@ -117,40 +121,45 @@ export class SquareGrid extends Graph {
 
     drawEdge(p: p5, 
         node1: string, node2: string, edge: {node: string, weight: number}, 
-        direction: string) {
+        intensity: number = 100) {
         const node1Coords = this.vertCoordinates.get(node1);
         const node2Coords = this.vertCoordinates.get(node2);
-        p.line(node1Coords[0], node1Coords[1], node2Coords[0], node2Coords[1]);
-        p.stroke(50);
-        // stroke weight is equal to ellipse diameter
+        let direction: string = node1Coords[0] == node2Coords[0] ? "y" : "x";
+        p.stroke(intensity);
         if (direction == "x") {
-            p.strokeWeight(this.x_step / 3);
+            p.strokeWeight(this.x_step / 2.5);
         }
         else {
-            p.strokeWeight(this.y_step / 3);
+            p.strokeWeight(this.y_step / 2.5    );
         }
-        p.textSize(this.y_step / 12);
-                p.textAlign(p.CENTER, p.CENTER);
-                p.text(edge.weight, 
-                    (node1Coords[0] + node2Coords[0]) / 2, 
-                    (node1Coords[1] + node2Coords[1]) / 2);
+        p.line(node1Coords[0], node1Coords[1], node2Coords[0], node2Coords[1]);
+
+        // p.stroke(intensity-50);
+        // p.strokeWeight(1);
+        // p.textSize(this.y_step / 12);
+        // p.textAlign(p.CENTER, p.CENTER);
+        // p.text("node1: " + node1 + "\nnode2: " + node2 + "\nweight: " + edge.weight , 
+        //     (node1Coords[0] + node2Coords[0]) / 2, 
+        //     (node1Coords[1] + node2Coords[1]) / 2);
     }
 
     private setLabyrinthStart(p: p5) {
         let startNode = this.getVertexKey(this.center);
-        this.drawNode(p, startNode, 255);
+        // this.drawNode(p, startNode, 255);
         console.log(`Starting at ${startNode}`)
         let activeNodes: Array<string> = [];
         let visited: Array<string> = [];
         visited.push(startNode);
         // add all 4 neighbors, draw vertices and edges, determine direction
         const neighbors = this.adjacencyList.get(startNode);
+        console.log(`Neighbors of ${startNode}: ${neighbors.map(neighbor => neighbor.node)}`);
         neighbors.forEach(neighbor => {
+            console.log(`Drawing edge ${startNode} -> ${neighbor.node}`);
             const neighborCoords = this.vertCoordinates.get(neighbor.node);
-            this.drawNode(p, neighbor.node);
+            // this.drawNode(p, neighbor.node);
             // if direction is x, draw horisontal edge, otherwise vertical
-            const direction = neighborCoords[0] == this.center[0] ? "x" : "y";
-            this.drawEdge(p, startNode, neighbor.node, neighbor, direction);
+            this.drawEdge(p, startNode, neighbor.node, neighbor);
+            console.log(`Done drawing edge ${startNode} -> ${neighbor.node}`)
             activeNodes.push(neighbor.node);
             visited.push(neighbor.node);
         });
@@ -178,15 +187,14 @@ export class SquareGrid extends Graph {
                 // draw edge
                 const activeNodeCoords = this.vertCoordinates.get(activeNode);
                 const nextNodeCoords = this.vertCoordinates.get(nextEdge.node);
-                const direction = activeNodeCoords[0] == nextNodeCoords[0] ? "x" : "y";
-                this.drawEdge(p, activeNode, nextEdge.node, nextEdge, direction);
+                this.drawEdge(p, activeNode, nextEdge.node, nextEdge);
                 // add the weight to the total weight
                 totalWight += nextEdge.weight;
-                console.log(`Adding edge ${activeNode} -> ${nextEdge.node} with weight ${nextEdge.weight}`);
+                // console.log(`Adding edge ${activeNode} -> ${nextEdge.node} with weight ${nextEdge.weight}`);
                 // add the edge to the visited set
                 visited.push(nextEdge.node);
                 // draw the edge
-                this.drawNode(p, nextEdge.node);
+                // this.drawNode(p, nextEdge.node);
                 // add the neighbor to the active nodes
                 activeNodes.push(nextEdge.node);
             }
@@ -198,6 +206,11 @@ export class SquareGrid extends Graph {
         // draw the graph only once, do not redraw it
     }
 
+}
+
+
+function getRandInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 

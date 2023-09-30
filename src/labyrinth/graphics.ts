@@ -2,7 +2,7 @@
 import {SquareGrid} from './graph';
 
 
-const nHNodes = 7;
+const nHNodes = 49;
 
 
 var sketch = (p: p5) => {
@@ -13,9 +13,15 @@ var sketch = (p: p5) => {
         p.noLoop();
     };
     p.draw = () => {
+        p.stroke(100);
+        p.fill(100);
+        p.circle(
+            graph.center[0] * graph.x_step,// + 25, 
+            graph.center[1] * graph.y_step,// + 25, 
+            50);
+        
         for (let [key, value] of graph.vertCoordinates) {
             p.ellipse(value[0], value[1], 5, 5);
-            p.fill(100); 
         }
         graph.drawPrimsLabyrinth(p);
     }
