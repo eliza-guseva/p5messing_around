@@ -8,6 +8,7 @@
     "build": "webpack --mode production",
     "start": "run-p compile build",
     "compile": "tsc",
+    "typescript": "tsc --watch",
     "start-run": "browser-sync start --server -w"
   },
   "keywords": [],

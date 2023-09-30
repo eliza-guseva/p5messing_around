@@ -129,7 +129,7 @@ export class SquareGrid extends Graph {
         else {
             p.strokeWeight(this.y_step / 3);
         }
-        p.textSize(20);
+        p.textSize(this.y_step / 12);
                 p.textAlign(p.CENTER, p.CENTER);
                 p.text(edge.weight, 
                     (node1Coords[0] + node2Coords[0]) / 2, 
