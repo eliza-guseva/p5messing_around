@@ -10,9 +10,6 @@ var sketch = (p: p5) => {
     p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.background(0);
-        p.noLoop();
-    };
-    p.draw = () => {
         p.stroke(100);
         p.fill(100);
         p.circle(
@@ -24,6 +21,9 @@ var sketch = (p: p5) => {
             p.ellipse(value[0], value[1], 5, 5);
         }
         graph.drawPrimsLabyrinth(p);
+    };
+    p.draw = () => {
+        
     }
 }
 new p5(sketch);
