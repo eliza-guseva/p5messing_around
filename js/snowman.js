@@ -92,7 +92,9 @@ var sketch = (p) => {
         for (let i = 0; i < frontSnoflakes.length; i++) {
             frontSnoflakes[i].update(t, wind);
             if (frontSnoflakes[i].y >= meanY - 2.5) {
-                groundSnowFlakes.push(frontSnoflakes[i]);
+                if (frontSnoflakes[i].y < p.windowHeight) {
+                    groundSnowFlakes.push(frontSnoflakes[i]);
+                }
                 frontSnoflakes[i] = gen1Snowflake(p, p.random(-1, 3));
             }
         }
