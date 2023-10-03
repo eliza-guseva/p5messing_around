@@ -31,16 +31,19 @@ class Snowflake {
     size: number;
     depth: number;
     shade: number;
+    base_speed: number = 4;
+    speed_bias: number = 0;
     constructor(p: p5, x: number, y: number, size: number, depth: number) {
         this.p = p;
         this.x = x;
         this.y = y;
         this.size = size / p.sqrt(depth);
         this.shade = 255 / p.sqrt(depth -1);
+        this.speed_bias = 0.5 * p.random(-1, 1);
     }
     update(t: number, wind: number = 0) {
-        this.y = (this.y + 5);
-        this.x = (this.x + 5 * wind);
+        this.y = (this.y + this.base_speed + this.speed_bias);
+        this.x = (this.x + this.base_speed * wind);
         this.draw();
     }
     draw() {
@@ -55,7 +58,7 @@ function gen1Snowflake(
     size: number=NaN,
     extraDepth: number = 0
     ): Snowflake {
-    let x = p.random(p.windowWidth);
+    let x = p.random(-100, p.windowWidth + 100);
     if (isNaN(y)) y = p.random(p.windowHeight);
     if (isNaN(size)) size = 10;
     let depth = 1 + 2 * p.random(1) + extraDepth;
@@ -64,32 +67,27 @@ function gen1Snowflake(
 
 var sketch = (p: p5) => {
     let fr = 30;
-    let wind = 0.1;
     let deepSnoflakes: Array<Snowflake> = [];
         // generate randomly distributed snowflakes
-        for (let i = 0; i < 400; i++) {
+        for (let i = 0; i < 800; i++) {
             deepSnoflakes.push(gen1Snowflake(p, NaN, NaN, 5));
         }
     let backSnoflakes: Array<Snowflake> = [];
         // generate randomly distributed snowflakes
-        for (let i = 0; i < 300; i++) {
+        for (let i = 0; i < 400; i++) {
             backSnoflakes.push(gen1Snowflake(p, NaN, NaN, 3));
         }
     let frontSnoflakes: Array<Snowflake> = [];
         // generate randomly distributed snowflakes
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 250; i++) {
             frontSnoflakes.push(gen1Snowflake(p));
         }
 
     let groundSnowFlakes: Array<Snowflake> = genGround(p);
 
-    function mousePressed() {
-            wind = random(-0.3, 0.3)
-        };
 
     p.setup = () => {
         let cnv = p.createCanvas(p.windowWidth, p.windowHeight);
-        cnv.mousePressed(mousePressed);
         p.frameRate(fr);  
     };
     p.draw = () => {
@@ -98,36 +96,38 @@ var sketch = (p: p5) => {
         let num = 10 * p.sin(t);
         let fatness = 1.1 - p.sin(t) / 10;
         p.fill(255);
+        let wind = 0.2 * p.sin(t / 10);
 
         // mean y of groundSnowlakes
         let meanY = groundSnowFlakes.reduce((acc, snowflake) => acc + snowflake.y, 0) / groundSnowFlakes.length;
         
         // draw every snowflake in array snowflakes
         for (let i = 0; i < deepSnoflakes.length; i++) {
-            deepSnoflakes[i].update(t, wind);
+            deepSnoflakes[i].update(t, 0.1 * p.cos(t / 10) + p.random(-0.01, 0.01));
             if (deepSnoflakes[i].y > p.windowHeight) {
                 deepSnoflakes[i] = gen1Snowflake(p, 0, NaN, 5);
             }
         }
 
         for (let i = 0; i < backSnoflakes.length; i++) {
-            backSnoflakes[i].update(t, 0.1);
+            backSnoflakes[i].update(t, wind);
             if (backSnoflakes[i].y > meanY) {
-                groundSnowFlakes.push(backSnoflakes[i]);
+                // groundSnowFlakes.push(backSnoflakes[i]);
                 backSnoflakes[i] = gen1Snowflake(p, 0, NaN, 2);
             }
         }
         drawSnowman(p, 400 + num, 200 + num, 150 + num, fatness);
         for (let i = 0; i < frontSnoflakes.length; i++) {
-            frontSnoflakes[i].update(t, 0.1);
-            if (frontSnoflakes[i].y > meanY) {
+            frontSnoflakes[i].update(t, wind);
+            if (frontSnoflakes[i].y >= meanY) {
                 groundSnowFlakes.push(frontSnoflakes[i]);
-                frontSnoflakes[i] = gen1Snowflake(p, 0);
+                frontSnoflakes[i] = gen1Snowflake(p, p.random(0,3));
             }
         }
         for (let i = 0; i < groundSnowFlakes.length; i++) {
             groundSnowFlakes[i].draw();
         }
+        console.log(groundSnowFlakes.length, meanY);
         
     }
 }
