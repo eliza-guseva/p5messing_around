@@ -91,15 +91,14 @@ var sketch = (p) => {
         drawSnowman(p, 400 + num, 200 + num, 150 + num, fatness);
         for (let i = 0; i < frontSnoflakes.length; i++) {
             frontSnoflakes[i].update(t, wind);
-            if (frontSnoflakes[i].y >= meanY) {
+            if (frontSnoflakes[i].y >= meanY - 2.5) {
                 groundSnowFlakes.push(frontSnoflakes[i]);
-                frontSnoflakes[i] = gen1Snowflake(p, p.random(0, 3));
+                frontSnoflakes[i] = gen1Snowflake(p, p.random(-1, 3));
             }
         }
         for (let i = 0; i < groundSnowFlakes.length; i++) {
             groundSnowFlakes[i].draw();
         }
-        console.log(groundSnowFlakes.length, meanY);
     };
 };
 new p5(sketch);
