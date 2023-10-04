@@ -76,6 +76,8 @@ var sketch = (p) => {
         p.fill(255);
         let wind = 0.2 * p.sin(t / 10);
         let meanY = groundSnowFlakes.reduce((acc, snowflake) => acc + snowflake.y, 0) / groundSnowFlakes.length;
+        let sortedY = groundSnowFlakes.map(snowflake => snowflake.y).sort((a, b) => a - b);
+        let q75 = sortedY[Math.floor(0.75 * sortedY.length)];
         for (let i = 0; i < deepSnoflakes.length; i++) {
             deepSnoflakes[i].update(t, 0.1 * p.cos(t / 10) + p.random(-0.01, 0.01));
             if (deepSnoflakes[i].y > p.windowHeight) {
@@ -91,7 +93,7 @@ var sketch = (p) => {
         drawSnowman(p, 400 + num, 200 + num, 150 + num, fatness);
         for (let i = 0; i < frontSnoflakes.length; i++) {
             frontSnoflakes[i].update(t, wind);
-            if (frontSnoflakes[i].y >= meanY - 2.5) {
+            if (frontSnoflakes[i].y >= q75) {
                 if (frontSnoflakes[i].y < p.windowHeight) {
                     groundSnowFlakes.push(frontSnoflakes[i]);
                 }
