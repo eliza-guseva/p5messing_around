@@ -100,36 +100,35 @@ class Rain extends Array<Drop> {
     }
 }
 
+function gauss(mean: number, std: number) {
+    // box muller transform
+    let u1 = Math.random();
+    let u2 = Math.random();
+    let z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(Math.PI * 2 * u2);
+    return mean + z0 * std;
+}
 
-let background_color = [90, 95, 92];
-let bright_drop_count = 500;
+
+
+let background_color = [7, 5, 28];
+let bright_drop_count = 100;
 let bck_drop_count = bright_drop_count * 2;
 
-let bright_drops: Array<BrightDrop> = [];
+let bright_drops: Array<Drop> = [];
+
 for (let i = 0; i < bright_drop_count; i++) {
-    bright_drops.push(new BrightDrop(
+    let color_gauss = gauss(10, 5)
+    bright_drops.push(new Drop(
         Math.random() * window.innerWidth, 
         Math.random() * window.innerHeight, 
-        50, 
-        2.5, 
-        35, 
+        gauss(75, 30),
+        Math.max(1, gauss(2, 2)),
+        Math.max(30, 50 + gauss(100, 50)),
         0, 
-        [125, 135, 138, 30]
+        [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 25 + gauss(5,1)]
     ));
 }
 
-let bck_drops: Array<Drop> = [];
-for (let i = 0; i < bck_drop_count; i++) {
-    bck_drops.push(new Drop(
-        Math.random() * window.innerWidth, 
-        Math.random() * window.innerHeight, 
-        20, 
-        2, 
-        4, 
-        0, 
-        [125, 135, 138, 20]
-    ));
-}
 
 
 
@@ -139,11 +138,6 @@ var sketch = (p: p5) => {
     let rain = new Rain(
         p, 
         bright_drops
-    );
-
-    let bck_rain = new Rain(
-        p, 
-        bck_drops
     );
 
 
@@ -156,7 +150,7 @@ var sketch = (p: p5) => {
 
 
     p.draw = () => {
-        p.background(90, 95, 92);
+        p.background(background_color);
         //bck_rain.draw(p);
         rain.draw(p);
         // p.image(cloud, -110-p.width/2, -130 -p.height/2, p.width + 220, 300);

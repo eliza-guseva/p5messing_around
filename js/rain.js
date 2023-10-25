@@ -50,27 +50,29 @@ class Rain extends Array {
         this.p = p;
     }
 }
-let background_color = [90, 95, 92];
-let bright_drop_count = 500;
+function gauss(mean, std) {
+    let u1 = Math.random();
+    let u2 = Math.random();
+    let z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(Math.PI * 2 * u2);
+    return mean + z0 * std;
+}
+let background_color = [7, 5, 28];
+let bright_drop_count = 100;
 let bck_drop_count = bright_drop_count * 2;
 let bright_drops = [];
 for (let i = 0; i < bright_drop_count; i++) {
-    bright_drops.push(new BrightDrop(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 50, 2.5, 35, 0, [125, 135, 138, 30]));
-}
-let bck_drops = [];
-for (let i = 0; i < bck_drop_count; i++) {
-    bck_drops.push(new Drop(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 20, 2, 4, 0, [125, 135, 138, 20]));
+    let color_gauss = gauss(10, 5);
+    bright_drops.push(new Drop(Math.random() * window.innerWidth, Math.random() * window.innerHeight, gauss(75, 30), Math.max(1, gauss(2, 2)), Math.max(30, 50 + gauss(100, 50)), 0, [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 25 + gauss(5, 1)]));
 }
 var sketch = (p) => {
     let rain = new Rain(p, bright_drops);
-    let bck_rain = new Rain(p, bck_drops);
     p.setup = () => {
         console.log(rain);
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.background(background_color);
     };
     p.draw = () => {
-        p.background(90, 95, 92);
+        p.background(background_color);
         rain.draw(p);
     };
 };
