@@ -21,7 +21,7 @@
             this.top_y = top_y;
             this.length = length;
             this.thickness = thickness;
-            this.speed = 1 + speed * Math.pow(Math.random(), 1/3);
+            this.speed = Math.max(speed/2, speed * Math.pow(Math.random(), 1/3));
             this.wind = wind;
             this.color = color;
     }
@@ -82,14 +82,28 @@ class Rain extends Array<Drop> {
                 this[i].top_y = 0 - 2 * this[i].length * p.random();
                 this[i].top_x = p.random() * p.width;
             }
+        }   
+    }
+
+    createDrops = (p: p5) => {
+        for (let i = 0; i < this.length; i++) {
+            this[i] = new Drop(
+                p.random() * p.width, 
+                p.random() * p.height, 
+                200, 
+                2, 
+                4, 
+                0, 
+                [125, 135, 138, 20]
+            );
         }
     }
 }
 
 
 let background_color = [90, 95, 92];
-let bright_drop_count = 1000;
-let bck_drop_count = bright_drop_count * 5;
+let bright_drop_count = 500;
+let bck_drop_count = bright_drop_count * 2;
 
 let bright_drops: Array<BrightDrop> = [];
 for (let i = 0; i < bright_drop_count; i++) {
@@ -98,9 +112,9 @@ for (let i = 0; i < bright_drop_count; i++) {
         Math.random() * window.innerHeight, 
         50, 
         2.5, 
-        10, 
+        35, 
         0, 
-        [125, 135, 138, 50]
+        [125, 135, 138, 30]
     ));
 }
 
@@ -109,9 +123,9 @@ for (let i = 0; i < bck_drop_count; i++) {
     bck_drops.push(new Drop(
         Math.random() * window.innerWidth, 
         Math.random() * window.innerHeight, 
-        200, 
+        20, 
         2, 
-        3, 
+        4, 
         0, 
         [125, 135, 138, 20]
     ));
@@ -143,7 +157,7 @@ var sketch = (p: p5) => {
 
     p.draw = () => {
         p.background(90, 95, 92);
-        bck_rain.draw(p);
+        //bck_rain.draw(p);
         rain.draw(p);
         // p.image(cloud, -110-p.width/2, -130 -p.height/2, p.width + 220, 300);
     }
