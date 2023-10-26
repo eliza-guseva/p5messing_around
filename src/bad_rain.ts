@@ -111,7 +111,7 @@ function gauss(mean: number, std: number) {
 
 
 let background_color = [7, 5, 28];
-let bright_drop_count = 100;
+let bright_drop_count = 1000;
 let bck_drop_count = bright_drop_count * 2;
 
 let bright_drops: Array<Drop> = [];
