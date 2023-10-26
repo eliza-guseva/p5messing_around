@@ -130,10 +130,6 @@ for (let i = 0; i < bright_drop_count; i++) {
 }
 
 
-
-
-
-
 var sketch = (p: p5) => {
     let rain = new Rain(
         p, 
