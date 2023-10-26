@@ -62,7 +62,7 @@ let bck_drop_count = bright_drop_count * 2;
 let bright_drops = [];
 for (let i = 0; i < bright_drop_count; i++) {
     let color_gauss = gauss(10, 5);
-    bright_drops.push(new Drop(Math.random() * window.innerWidth, Math.random() * window.innerHeight, gauss(75, 30), Math.max(1, gauss(2, 2)), Math.max(30, 50 + gauss(100, 50)), 0, [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 45 + gauss(5, 1)]));
+    bright_drops.push(new Drop(Math.random() * window.innerWidth, Math.random() * window.innerHeight, gauss(75, 30), Math.max(1, gauss(2, 2)), Math.max(30, 50 + gauss(100, 50)), 0, [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 55 + gauss(5, 5)]));
 }
 var sketch = (p) => {
     let rain = new Rain(p, bright_drops);

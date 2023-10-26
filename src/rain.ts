@@ -125,7 +125,7 @@ for (let i = 0; i < bright_drop_count; i++) {
         Math.max(1, gauss(2, 2)),
         Math.max(30, 50 + gauss(100, 50)),
         0, 
-        [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 45 + gauss(5,1)]
+        [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 55 + gauss(5,5)]
     ));
 }
 
