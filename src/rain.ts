@@ -70,7 +70,7 @@
 
     static setRandColor(p: p5) {
         let color_gauss = gauss(10, 5)
-        return [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 55 + gauss(5,5)];
+        return [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 45 + gauss(5,5)];
     }
 }
 
