@@ -32,6 +32,46 @@
         p.line(this.top_x, this.top_y, this.top_x, this.top_y + this.length);
         
     }
+
+    static getRandDrop(p: p5) {
+        return new Drop(
+            this.setRandTopX(p), 
+            this.setRandTopY(p), 
+            this.setRandLength(p), 
+            this.setRandThickness(p), 
+            this.setRandSpeed(p), 
+            this.setRandWind(p), 
+            this.setRandColor(p)
+        );
+    }
+
+    static setRandTopX(p: p5) {
+        return p.random() * p.width;
+    }
+
+    static setRandTopY(p: p5) {
+        return p.random() * p.height;
+    }
+
+    static setRandLength(p: p5) {
+        return gauss(175, 30);
+    }
+    static setRandThickness(p: p5) {
+        return Math.max(1, gauss(2, 2));
+    }
+
+    static setRandSpeed(p: p5) {
+        return Math.max(100, 150 + gauss(100, 50));
+    }
+
+    static setRandWind(p: p5) {
+        return 0;
+    }
+
+    static setRandColor(p: p5) {
+        let color_gauss = gauss(10, 5)
+        return [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 55 + gauss(5,5)];
+    }
 }
 
 // creat class BrightDrop extends Drop
@@ -62,6 +102,27 @@ class BrightDrop extends Drop {
     }
 }
 
+class Reflection {
+    p: p5;
+    refl_y: number;
+    start_frame: number;
+    constructor (
+        p: p5,
+        refl_y: number
+    ) {
+        this.p = p;
+        this.refl_y = refl_y;
+        this.start_frame = p.frameCount;
+    }
+
+    draw = (p: p5) => {
+        p.stroke(255, 255, 255, 255);
+        p.strokeWeight(1);
+       
+    }
+
+}
+
 
 class Rain extends Array<Drop> {
     p: p5;
@@ -81,22 +142,13 @@ class Rain extends Array<Drop> {
             if (this[i].top_y >= p.height) {
                 this[i].top_y = 0 - 2 * this[i].length * p.random();
                 this[i].top_x = p.random() * p.width;
+                this[i].length = Drop.setRandLength(p);
+                this[i].thickness = Drop.setRandThickness(p);
+                this[i].speed = Drop.setRandSpeed(p);
+                this[i].wind = Drop.setRandWind(p);
+                this[i].color = Drop.setRandColor(p);
             }
         }   
-    }
-
-    createDrops = (p: p5) => {
-        for (let i = 0; i < this.length; i++) {
-            this[i] = new Drop(
-                p.random() * p.width, 
-                p.random() * p.height, 
-                200, 
-                2, 
-                4, 
-                0, 
-                [125, 135, 138, 20]
-            );
-        }
     }
 }
 
@@ -110,31 +162,23 @@ function gauss(mean: number, std: number) {
 
 
 
-let background_color = [7, 5, 28];
-let bright_drop_count = 100;
-let bck_drop_count = bright_drop_count * 2;
+// let background_color = [7, 5, 28]; //night
+let background_color = [57, 65, 85]; //late evening
+let drop_count = 100;
 
-let bright_drops: Array<Drop> = [];
-
-for (let i = 0; i < bright_drop_count; i++) {
-    let color_gauss = gauss(10, 5)
-    bright_drops.push(new Drop(
-        Math.random() * window.innerWidth, 
-        Math.random() * window.innerHeight, 
-        gauss(75, 30),
-        Math.max(1, gauss(2, 2)),
-        Math.max(30, 50 + gauss(100, 50)),
-        0, 
-        [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 45 + gauss(5,5)]
-    ));
-}
+let drops: Array<Drop> = [];
 
 
 var sketch = (p: p5) => {
+
+    for (let i = 0; i < drop_count; i++) {
+        drops.push(Drop.getRandDrop(p));
+    }
+
     let rain = new Rain(
-        p, 
-        bright_drops
-    );
+            p, 
+            drops
+        );
 
 
     p.setup = () => {
@@ -149,7 +193,8 @@ var sketch = (p: p5) => {
         p.background(background_color);
         //bck_rain.draw(p);
         rain.draw(p);
-        // p.image(cloud, -110-p.width/2, -130 -p.height/2, p.width + 220, 300);
+        p.fill(95, 100, 115, 255);
+        p.rect(p.width/2 - 500, p.height/2 - 300, 1000, 800);
     }
     }
 
