@@ -54,14 +54,14 @@
     }
 
     static setRandLength(p: p5) {
-        return gauss(175, 30);
+        return Math.max(90, gauss(100, 30));
     }
     static setRandThickness(p: p5) {
-        return Math.max(1, gauss(2, 2));
+        return Math.max(1, gauss(1, 2));
     }
 
     static setRandSpeed(p: p5) {
-        return Math.max(100, 150 + gauss(100, 50));
+        return Math.max(100, 10 + gauss(100, 50));
     }
 
     static setRandWind(p: p5) {
@@ -70,7 +70,7 @@
 
     static setRandColor(p: p5) {
         let color_gauss = gauss(10, 5)
-        return [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 45 + gauss(5,5)];
+        return [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 65 + gauss(5,5)];
     }
 }
 
@@ -164,7 +164,7 @@ function gauss(mean: number, std: number) {
 
 // let background_color = [7, 5, 28]; //night
 let background_color = [57, 65, 85]; //late evening
-let drop_count = 100;
+let drop_count = 500;
 
 let drops: Array<Drop> = [];
 

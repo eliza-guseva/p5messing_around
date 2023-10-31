@@ -23,20 +23,20 @@ class Drop {
         return p.random() * p.height;
     }
     static setRandLength(p) {
-        return gauss(175, 30);
+        return Math.max(90, gauss(100, 30));
     }
     static setRandThickness(p) {
-        return Math.max(1, gauss(2, 2));
+        return Math.max(1, gauss(1, 2));
     }
     static setRandSpeed(p) {
-        return Math.max(100, 150 + gauss(100, 50));
+        return Math.max(100, 10 + gauss(100, 50));
     }
     static setRandWind(p) {
         return 0;
     }
     static setRandColor(p) {
         let color_gauss = gauss(10, 5);
-        return [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 45 + gauss(5, 5)];
+        return [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 65 + gauss(5, 5)];
     }
 }
 class BrightDrop extends Drop {
@@ -93,7 +93,7 @@ function gauss(mean, std) {
     return mean + z0 * std;
 }
 let background_color = [57, 65, 85];
-let drop_count = 100;
+let drop_count = 500;
 let drops = [];
 var sketch = (p) => {
     for (let i = 0; i < drop_count; i++) {
