@@ -9,7 +9,7 @@ class RainLine {
     constructor(p: p5) {
         this.p = p;
         this.angle = 0.17;
-        this.width = boundGauss(2, 2, 1, 3);
+        this.width = Math.floor(Math.random() * 2) + 1;
         let xShift = Math.tan(this.angle) * this.p.windowHeight;
         this.xStart = Math.random() * (this.p.windowWidth + xShift) - xShift;
         this.lines = this.getLine();
@@ -82,6 +82,7 @@ var sketch = (p: p5) => {
         p.background(57, 65, 85);
         
         for (let i = 0; i < rainLines.length; i++) {
+            rainLines[i].xStart += Math.random() * 20 - 10;
             rainLines[i].lines = rainLines[i].getLine();
             rainLines[i].draw();
         }
