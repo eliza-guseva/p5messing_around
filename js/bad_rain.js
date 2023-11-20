@@ -15,6 +15,8 @@ class Drop {
         p.line(this.top_x, this.top_y, this.top_x, this.top_y + this.length);
     }
 }
+
+
 class BrightDrop extends Drop {
     // foreground drop, has a highlight
     constructor(top_x, top_y, length, thickness, speed, wind, color) {
@@ -31,10 +33,39 @@ class BrightDrop extends Drop {
         p.line(this.top_x, bright_init_y, this.top_x, bright_init_y + bright_len);
     }
 }
+
+
+class ReflectedDrop{
+    // flies back
+    constructor(top_x, top_y, length, thickness, textbox_x, textbox_y, color) {
+        this.top_x = top_x;
+        this.top_y = top_y;
+        this.length = length;
+        this.thickness = thickness;
+        this.thexbox_x = textbox_x;
+        this.textbox_y = textbox_y;
+        this.wind = Math.tan(Math.random() * Math.PI / 4) * this.length;
+        this.wind_dir = Math.random() > 0.5 ? 1 : -1;
+        this.color = color;
+        this.countdown = 5;
+    }
+    draw(p) {
+        if (this.countdown > 0) {
+            p.stroke(this.color);
+            p.strokeWeight(this.thickness);
+            p.line(this.top_x, this.top_y, this.top_x + this.wind * this.wind_dir, this.top_y - this.length);
+            this.countdown -= 1;
+        }
+    }
+}
+
+
 class Rain extends Array {
     // collection of drops
-    constructor(p, drops) {
+    constructor(p, drops, is_reflected = false, textbox_x = 0, textbox_y = 0, textbox_width = 0) {
         super(...drops);
+        this.is_reflected = is_reflected;
+        this.reflections = [];
         this.draw = (p) => {
             for (let i = 0; i < this.length; i++) {
                 this[i].draw(p);
@@ -43,6 +74,24 @@ class Rain extends Array {
                     this[i].top_y = 0 - 2 * this[i].length * p.random();
                     this[i].top_x = p.random() * p.width;
                 }
+                let bottom_y = this[i].top_y + this[i].length;
+                let at_textbox_y = bottom_y >= textbox_y && bottom_y <= textbox_y + this[i].length;
+                let at_textbox_x = this[i].top_x >= textbox_x && this[i].top_x <= textbox_x + textbox_width;
+                if (is_reflected && at_textbox_y && at_textbox_x) {
+
+                    this.reflections.push(
+                        new ReflectedDrop(
+                            this[i].top_x, // x
+                            textbox_y, // y
+                            gauss(7,3), // length
+                            1.5, // width
+                            textbox_x, // textbox_x
+                            textbox_y, // textbox_y
+                            this[i].color));
+                }
+            }
+            for (let i = 0; i < this.reflections.length; i++) {
+                this.reflections[i].draw(p);
             }
         };
         this.createDrops = (p) => {
@@ -93,7 +142,15 @@ for (let i = 0; i < bck_drop_count; i++) {
 }
 
 var sketch = (p) => {
-    let rain = new Rain(p, bright_drops);
+    let textbox_x = p.windowWidth/2 - 250;
+    let textbox_y = p.windowHeight/2 - 300;
+    let textbox_width = 500;
+    let textbox_height = 600;
+    // screen width not using p
+    console.log(p.windowWidth, p.windowHeight);
+    console.log(textbox_x, textbox_y, textbox_width, textbox_height);
+
+    let rain = new Rain(p, bright_drops, is_reflected = true, textbox_x, textbox_y, textbox_width);
     let bck_raind = new Rain(p, bck_drops);
     p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
@@ -104,7 +161,8 @@ var sketch = (p) => {
         bck_raind.draw(p);
         rain.draw(p);
         p.fill(75, 90, 125, 255);
-        p.rect(p.width/2 - 250, p.height/2 - 300, 500, 600);
+        
+        p.rect(textbox_x, textbox_y, textbox_width, textbox_height);
     };
 };
 new p5(sketch);
