@@ -1,4 +1,5 @@
 class Drop {
+    // background drop, doesn't have a highlight
     constructor(top_x, top_y, length, thickness, speed, wind, color) {
         this.top_x = top_x;
         this.top_y = top_y;
@@ -15,6 +16,7 @@ class Drop {
     }
 }
 class BrightDrop extends Drop {
+    // foreground drop, has a highlight
     constructor(top_x, top_y, length, thickness, speed, wind, color) {
         super(top_x, top_y, length, thickness, speed, wind, color);
         this.random = Math.pow(Math.random(), 2);
@@ -30,6 +32,7 @@ class BrightDrop extends Drop {
     }
 }
 class Rain extends Array {
+    // collection of drops
     constructor(p, drops) {
         super(...drops);
         this.draw = (p) => {
@@ -57,23 +60,51 @@ function gauss(mean, std) {
     return mean + z0 * std;
 }
 let background_color = [7, 5, 28];
-let bright_drop_count = 1000;
-let bck_drop_count = bright_drop_count * 2;
+let bright_drop_count = 300;
+let bck_drop_count = 200;
 let bright_drops = [];
+let bck_drops = [];
 for (let i = 0; i < bright_drop_count; i++) {
     let color_gauss = gauss(10, 5);
-    bright_drops.push(new BrightDrop(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 50, Math.max(1, gauss(2, 1)), 15, 0, [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 85 + gauss(5, 1)]));
+    bright_drops.push(
+        new BrightDrop(
+            Math.random() * window.innerWidth, // x
+            Math.random() * window.innerHeight, // y
+            Math.max(30,gauss(30, 50)), // length
+            Math.max(1, gauss(2, 1)), // width
+            50, // speed
+            0, // wind
+            [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 45 + gauss(5, 1)]
+            ));
 }
+
+for (let i = 0; i < bck_drop_count; i++) {
+    let color_gauss = gauss(10, 5);
+    bck_drops.push(
+        new Drop(
+            Math.random() * window.innerWidth, // x
+            Math.random() * window.innerHeight, // y
+            Math.max(300,gauss(100, 50)), // length
+            Math.max(1, gauss(40, 10)), // width
+            100, // speed
+            0, // wind
+            [120 + color_gauss, 120 + color_gauss, 120 + color_gauss, 2 + gauss(2, 1)]
+            ));
+}
+
 var sketch = (p) => {
     let rain = new Rain(p, bright_drops);
+    let bck_raind = new Rain(p, bck_drops);
     p.setup = () => {
-        console.log(rain);
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.background(background_color);
     };
     p.draw = () => {
         p.background(background_color);
+        bck_raind.draw(p);
         rain.draw(p);
+        p.fill(75, 90, 125, 255);
+        p.rect(p.width/2 - 250, p.height/2 - 300, 500, 600);
     };
 };
 new p5(sketch);
