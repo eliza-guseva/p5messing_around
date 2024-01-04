@@ -108,7 +108,7 @@ var sketch = (p) => {
     p.draw = () => {
         p.background(background_color);
         rain.draw(p);
-        p.fill(95, 100, 115, 255);
+        p.fill(55, 65, 75, 105);
         p.rect(p.width / 2 - 300, p.height / 2 - 200, 600, 400);
     };
 };
