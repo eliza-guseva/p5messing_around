@@ -44,8 +44,8 @@ var sketch = (p) => {
                 destY = j * destH;
                 srcW = img.width / colCount;
                 srcH = img.height / rowCount;
-                srcX = i * srcW + nx * Math.min(20, amp * p.frameCount * 0.01);
-                srcY = j * srcH + ny * Math.min(20, amp * p.frameCount * 0.01);
+                srcX = i * srcW + nx * Math.min(25, amp * p.frameCount * 0.01);
+                srcY = j * srcH + ny * Math.min(25, amp * p.frameCount * 0.01);
                 //srcX = i * srcW + 30 * p.noise(p.frameCount * 0.01);
                 //srcY = j * srcH + 30 * p.noise(p.frameCount * 0.01);
                 // srcX = i * srcW + 10 * p.sin(p.frameCount * 0.01);
