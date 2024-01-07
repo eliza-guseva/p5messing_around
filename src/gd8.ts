@@ -44,7 +44,7 @@ var sketch = (p: p5) => {
     };
 
     p.draw  = () => {
-        //p.background(0, 0, 5, 5);
+        p.background(5, 0, 15, 5);
         for (let i=0; i<particles.length; i++){
             let x = particles[i][0];
             let y = particles[i][1];
@@ -53,11 +53,11 @@ var sketch = (p: p5) => {
             p.strokeWeight(1);
             p.stroke(150, 150, 110, 1);
             p.circle(x, y, 4);
-            //dark circle at previous position
-            p.fill(5, 0, 20, 100);
-            p.strokeWeight(1);
-            p.stroke(1, 0, 20, 100);
-            p.circle(prev_positions[i][0], prev_positions[i][1], 3);
+            // //dark circle at previous position
+            // p.fill(5, 0, 20, 100);
+            // p.strokeWeight(1);
+            // p.stroke(1, 0, 20, 100);
+            // p.circle(prev_positions[i][0], prev_positions[i][1], 3);
             //small bright circle at previous position
             p.fill(255, 255, 180, 250);
             p.strokeWeight(1);
@@ -79,9 +79,6 @@ var sketch = (p: p5) => {
             if (particles[i][1] > p.height+3) particles[i][1] -= p.height + 3;
 
             if (p.random() < 0.1 && Math.abs(windX) < 0.01 && Math.abs(windY) < 0.01) {
-                // bright cross in the middle, radius of 4
-                // p.line(x-4, y, x + 4, y);
-                // p.line(x, y-4, x, y+4);
                 p.strokeWeight(1);
                 p.stroke(0, 0, 5, 250);
                 p.fill(0, 0, 5, 250);

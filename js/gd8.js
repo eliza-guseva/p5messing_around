@@ -36,6 +36,7 @@ var sketch = (p) => {
         }
     };
     p.draw = () => {
+        p.background(5, 0, 15, 5);
         for (let i = 0; i < particles.length; i++) {
             let x = particles[i][0];
             let y = particles[i][1];
@@ -43,10 +44,6 @@ var sketch = (p) => {
             p.strokeWeight(1);
             p.stroke(150, 150, 110, 1);
             p.circle(x, y, 4);
-            p.fill(5, 0, 20, 100);
-            p.strokeWeight(1);
-            p.stroke(1, 0, 20, 100);
-            p.circle(prev_positions[i][0], prev_positions[i][1], 3);
             p.fill(255, 255, 180, 250);
             p.strokeWeight(1);
             p.stroke(250, 250, 180, 250);
