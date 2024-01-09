@@ -32,7 +32,6 @@ var sketch = (p: p5) => {
             let x = p.random() * (p.width+10)-5;
             let y = p.random() * (p.height+10)-5;
             particles.push([x, y]);
-            //distributeOnBorders(p, particles, i);
         }
         for (let i=0; i<particleNum; i++){
             let x = particles[i][0];
@@ -53,12 +52,6 @@ var sketch = (p: p5) => {
             p.strokeWeight(1);
             p.stroke(150, 150, 110, 1);
             p.circle(x, y, 4);
-            // //dark circle at previous position
-            // p.fill(5, 0, 20, 100);
-            // p.strokeWeight(1);
-            // p.stroke(1, 0, 20, 100);
-            // p.circle(prev_positions[i][0], prev_positions[i][1], 3);
-            //small bright circle at previous position
             p.fill(255, 255, 180, 250);
             p.strokeWeight(1);
             p.stroke(250, 250, 180, 250);
