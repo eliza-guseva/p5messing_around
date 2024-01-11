@@ -18,19 +18,21 @@ function drawCells(p, cells) {
     for (let i = 0; i < cells.length; i++) {
         for (let j = 0; j < cells[0].length; j++) {
             if (cells[i][j] === 1) {
-                p.fill(0);
-                p.circle(i * w, j * h, w);
+                let hue = p.map(p.noise(i * 0.1, j * 0.1, p.frameCount * 0.01), 0, 1, 180, 360);
+                p.fill(hue, 100, 100, 1);
+                p.circle(i * w, j * h, 2 * w);
             }
             else if (cells[i][j] > 0.1) {
                 let hue = 0;
-                hue = p.map(cells[i][j], 0.0, 1, 180, 360);
+                let noise = p.noise(i * 0.1, j * 0.1, p.frameCount * 0.01);
+                hue = p.map(cells[i][j] * noise, 0.0, 1, 90, 360);
                 let saturation = 100;
                 let brightness = 100 * cells[i][j];
-                p.fill(hue, saturation, brightness);
-                p.circle(i * w, j * h, w * cells[i][j]);
+                p.fill(hue, saturation, brightness, 1);
+                p.circle(i * w, j * h, 2 * w * cells[i][j]);
             }
             else {
-                p.fill(0, 0, 100);
+                p.fill(0, 0, 0, 1);
                 p.circle(i * w, j * h, w);
             }
         }
@@ -83,6 +85,7 @@ var sketch = (p) => {
     let rows = Math.floor(cols * p.windowHeight / p.windowWidth);
     p.setup = () => {
         p.colorMode(p.HSB);
+        p.frameRate(30);
         p.fill(0);
         p.noStroke();
         p.createCanvas(p.windowWidth, p.windowHeight);
@@ -96,6 +99,9 @@ var sketch = (p) => {
         fillCell(cells, 19, 24);
     };
     p.draw = () => {
+        p.blendMode(p.BLEND);
+        p.background(0, 0.3);
+        p.blendMode(p.SCREEN);
         drawCells(p, cells);
         cells = updateCells(p, cells);
     };
