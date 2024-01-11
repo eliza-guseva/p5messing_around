@@ -18,22 +18,18 @@ function drawCells(p, cells) {
     for (let i = 0; i < cells.length; i++) {
         for (let j = 0; j < cells[0].length; j++) {
             if (cells[i][j] === 1) {
-                let hue = p.map(p.noise(i * 0.1, j * 0.1, p.frameCount * 0.01), 0, 1, 180, 360);
-                p.fill(hue, 100, 100, 1);
-                p.circle(i * w, j * h, 2 * w);
-            }
-            else if (cells[i][j] > 0.1) {
-                let hue = 0;
-                let noise = p.noise(i * 0.1, j * 0.1, p.frameCount * 0.01);
-                hue = p.map(cells[i][j] * noise, 0.0, 1, 90, 360);
-                let saturation = 100;
-                let brightness = 100 * cells[i][j];
-                p.fill(hue, saturation, brightness, 1);
-                p.circle(i * w, j * h, 2 * w * cells[i][j]);
+                let hue = p.map(p.noise(i * 0.1, j * 0.1, p.frameCount * 0.01), 0, 1, 0, 360);
+                p.fill(hue, 100, 100, 0.1);
+                p.circle(i * w, j * h, 5 * w);
             }
             else {
-                p.fill(0, 0, 0, 1);
-                p.circle(i * w, j * h, w);
+                let hue = 0;
+                let noise = p.noise(i * 0.1, j * 0.1, p.frameCount * 0.01);
+                hue = p.map(cells[i][j] * noise, 0.0, 1, 0, 360);
+                let saturation = 100;
+                let brightness = 100 * cells[i][j];
+                p.fill(hue, saturation, brightness, 0.5);
+                p.circle(i * w, j * h, 3 * w * cells[i][j]);
             }
         }
     }
@@ -61,7 +57,7 @@ function updateCells(p, cells) {
                     new_cells[i][j] = 1;
                 }
                 else {
-                    new_cells[i][j] = 0.9;
+                    new_cells[i][j] = 0.99;
                 }
             }
             else {
@@ -69,7 +65,7 @@ function updateCells(p, cells) {
                     new_cells[i][j] = 1;
                 }
                 else {
-                    new_cells[i][j] = cells[i][j] * 0.9;
+                    new_cells[i][j] = cells[i][j] * 0.99;
                 }
             }
             if (p.random() < 0.01) {
@@ -85,7 +81,7 @@ var sketch = (p) => {
     let rows = Math.floor(cols * p.windowHeight / p.windowWidth);
     p.setup = () => {
         p.colorMode(p.HSB);
-        p.frameRate(30);
+        p.frameRate(10);
         p.fill(0);
         p.noStroke();
         p.createCanvas(p.windowWidth, p.windowHeight);
