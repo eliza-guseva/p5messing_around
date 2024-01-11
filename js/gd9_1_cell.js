@@ -14,15 +14,24 @@ function flipCell(cells, a_col, a_row) {
 function drawCells(p, cells) {
     let w = p.width / cells.length;
     let h = p.height / cells[0].length;
+    p.noStroke();
     for (let i = 0; i < cells.length; i++) {
         for (let j = 0; j < cells[0].length; j++) {
-            if (cells[i][j] == 1) {
+            if (cells[i][j] === 1) {
                 p.fill(0);
-                p.rect(i * w + 1, j * h + 1, w - 2, h - 2);
+                p.circle(i * w, j * h, w);
+            }
+            else if (cells[i][j] > 0.1) {
+                let hue = 0;
+                hue = p.map(cells[i][j], 0.0, 1, 180, 360);
+                let saturation = 100;
+                let brightness = 100 * cells[i][j];
+                p.fill(hue, saturation, brightness);
+                p.circle(i * w, j * h, w * cells[i][j]);
             }
             else {
-                p.fill(255);
-                p.rect(i * w + 1, j * h + 1, w - 2, h - 2);
+                p.fill(0, 0, 100);
+                p.circle(i * w, j * h, w);
             }
         }
     }
@@ -33,28 +42,24 @@ function countNeighbors(cells, a_col, a_row) {
         for (let j = -1; j < 2; j++) {
             let col = (a_col + i + cells.length) % cells.length;
             let row = (a_row + j + cells[0].length) % cells[0].length;
-            if (cells[col][row] == 1 && !(i == 0 && j == 0)) {
+            if (cells[col][row] === 1 && !(i === 0 && j === 0)) {
                 numN += 1;
             }
         }
     }
     return numN;
 }
-function updateCells(cells) {
+function updateCells(p, cells) {
     let new_cells = make2DArray(cells.length, cells[0].length);
     for (let i = 0; i < cells.length; i++) {
         for (let j = 0; j < cells[0].length; j++) {
             let neighbors = countNeighbors(cells, i, j);
-            if (i < 24 && i > 18 && j < 24 && j > 18) {
-                console.log(i, j);
-                console.log(neighbors);
-            }
             if (cells[i][j] == 1) {
-                if (neighbors < 2 || neighbors > 3) {
-                    new_cells[i][j] = 0;
+                if (neighbors === 2 || neighbors === 3) {
+                    new_cells[i][j] = 1;
                 }
                 else {
-                    new_cells[i][j] = 1;
+                    new_cells[i][j] = 0.9;
                 }
             }
             else {
@@ -62,8 +67,11 @@ function updateCells(cells) {
                     new_cells[i][j] = 1;
                 }
                 else {
-                    new_cells[i][j] = 0;
+                    new_cells[i][j] = cells[i][j] * 0.9;
                 }
+            }
+            if (p.random() < 0.01) {
+                new_cells[i][j] = 1;
             }
         }
     }
@@ -71,28 +79,25 @@ function updateCells(cells) {
 }
 var sketch = (p) => {
     let cells;
-    let cols = 100;
+    let cols = 50;
     let rows = Math.floor(cols * p.windowHeight / p.windowWidth);
     p.setup = () => {
-        p.frameRate(1);
+        p.colorMode(p.HSB);
         p.fill(0);
         p.noStroke();
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.background(200);
         cells = make2DArray(cols, rows);
-        fillCell(cells, 20, 21);
-        fillCell(cells, 19, 21);
         fillCell(cells, 20, 22);
-        fillCell(cells, 21, 22);
+        fillCell(cells, 19, 22);
         fillCell(cells, 20, 23);
-        fillCell(cells, 19, 23);
+        fillCell(cells, 21, 23);
+        fillCell(cells, 20, 24);
+        fillCell(cells, 19, 24);
     };
     p.draw = () => {
         drawCells(p, cells);
-        cells = updateCells(cells);
-        if (p.frameCount > 1) {
-            p.noLoop();
-        }
+        cells = updateCells(p, cells);
     };
 };
 new p5(sketch);
