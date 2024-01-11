@@ -196,8 +196,8 @@ var sketch = (p: p5) => {
                 //console.log('xc, yc:', hex.xc, hex.yc)
                 let [windX, windY] = hex.getWind(p, xp, yp);
                 p.fill(color, 100, 100, 100);
-                // p.circle(xp, yp, 30);
-                drawHexagon(p, xp, yp, 20);
+                p.circle(xp, yp, 5);
+                //drawHexagon(p, xp, yp, 20);
                 xp += windX * hexRadius;
                 yp += windY * hexRadius;
                 hex.particles[i][0] = xp;

@@ -150,7 +150,7 @@ var sketch = (p) => {
                 let yp = hex.particles[i][1];
                 let [windX, windY] = hex.getWind(p, xp, yp);
                 p.fill(color, 100, 100, 100);
-                drawHexagon(p, xp, yp, 20);
+                p.circle(xp, yp, 5);
                 xp += windX * hexRadius;
                 yp += windY * hexRadius;
                 hex.particles[i][0] = xp;
