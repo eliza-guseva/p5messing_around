@@ -193,23 +193,13 @@ var sketch = (p: p5) => {
             for (let i = 0; i < hex.n_particles; i++) {
                 let xp = hex.particles[i][0];
                 let yp = hex.particles[i][1];
-                //console.log('xc, yc:', hex.xc, hex.yc)
                 let [windX, windY] = hex.getWind(p, xp, yp);
                 p.fill(color, 100, 100, 100);
                 p.circle(xp, yp, 5);
-                //drawHexagon(p, xp, yp, 20);
                 xp += windX * hexRadius;
                 yp += windY * hexRadius;
                 hex.particles[i][0] = xp;
                 hex.particles[i][1] = yp;
-                // if (p.random() < 0.05) {
-                //     hex.particles[i][0] = xc;
-                //     hex.particles[i][1] = yc;
-                // }
-                // if (hex.screen2local(p, xp, yp)[0] > 1.5 * hex.radius && p.random() < 0.1) {
-                //     hex.particles[i][0] = xc;
-                //     hex.particles[i][1] = yc;
-                // }
 
                 
             }
