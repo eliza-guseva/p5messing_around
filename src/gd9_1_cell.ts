@@ -70,13 +70,13 @@ function updateCells(p: p5, cells: any[][]) {
                 if (neighbors === 2 || neighbors === 3) {
                     new_cells[i][j] = 1;}
                 else {
-                    new_cells[i][j] = 0.99;
+                    new_cells[i][j] = 0.9;
                 }}
             else {
                 if (neighbors == 3) {
                     new_cells[i][j] = 1;}
                 else {
-                    new_cells[i][j] = cells[i][j] * 0.99;
+                    new_cells[i][j] = cells[i][j] * 0.9;
             
             }}
             if (p.random() < 0.01) {

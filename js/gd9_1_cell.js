@@ -57,7 +57,7 @@ function updateCells(p, cells) {
                     new_cells[i][j] = 1;
                 }
                 else {
-                    new_cells[i][j] = 0.99;
+                    new_cells[i][j] = 0.9;
                 }
             }
             else {
@@ -65,7 +65,7 @@ function updateCells(p, cells) {
                     new_cells[i][j] = 1;
                 }
                 else {
-                    new_cells[i][j] = cells[i][j] * 0.99;
+                    new_cells[i][j] = cells[i][j] * 0.9;
                 }
             }
             if (p.random() < 0.01) {
