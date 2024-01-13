@@ -20,7 +20,7 @@ function genCurve(p: p5, wobbleFunction: (x: number, t: number) => number, t: nu
 
 function frameCount2Y(p: p5, t: number, how_far: number) {
     return (
-        p.windowHeight * 0.9 
+        p.windowHeight * 0.8
         + how_far * p.windowHeight * (
             Math.sin(t / 100)
             + Math.cos(2 + t / 130))
@@ -32,16 +32,20 @@ function frameCount2Y(p: p5, t: number, how_far: number) {
 var sketch = (p: p5) => {
     let scrW = p.windowWidth;
     let scrH = p.windowHeight;
+    let sand = [194, 178, 128]
+    let wetSand = [194, 143, 96]
 
     p.setup = () => {
       p.createCanvas(p.windowWidth, p.windowHeight);
       // fill with color of a dry sand
-      p.background(234,228,214);
+      p.background(sand);
     };
   
     p.draw = () => {
-        p.background(234,228,214);
+        p.background(sand);
         p.noStroke();
+        p.fill(wetSand)
+        genCurve(p, wobble1, frameCount2Y(p, p.frameCount-100, 0.25));
         p.fill(0, 105, 148);
         genCurve(p, wobble1, frameCount2Y(p, p.frameCount, 0.25));
     }
